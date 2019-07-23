@@ -29,10 +29,14 @@ You must setup/enable libvirt per your Linux distribution instructions
 
 
 # Login into the master node
-ssh root@$(./get-vm-ip node1)
+ssh -i keys/kubepgs_id_ed25519 root@$(./get-vm-ip node1)
+
 # Password is: password
 ```
 
 ## References:
 
-https://www.cyberciti.biz/faq/how-to-install-kvm-on-centos-7-rhel-7-headless-server/
+- https://www.cyberciti.biz/faq/how-to-install-kvm-on-centos-7-rhel-7-headless-server/
+
+- https://earlruby.org/2018/12/setting-up-a-personal-production-quality-kubernetes-cluster-with-kubespray/
+
