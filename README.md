@@ -4,7 +4,9 @@ This repository provides scripts that can be used to setup a kubernetes playgrou
 
 Planned:
 
-- [x] Install CentOS 7 nodes «using virt-install»
+- [x] Install CentOS 7 nodes using virt-install
+    - [x] server .iso image
+    - [x] minimal kickstart
 - [ ] Install Upstream Kubernetes using kubespray
 
 Tested on Fedora 30, should work with any modern Linux distribution.
@@ -14,9 +16,8 @@ Tested on Fedora 30, should work with any modern Linux distribution.
 - Libvirt/KVM setup per your Linux distribution instructions
 - virt-install
 
-You must setup/enable libvirt per your Linux distribution instructions
 
-## Installl
+## Install
 
 ```sh
 
@@ -27,11 +28,14 @@ You must setup/enable libvirt per your Linux distribution instructions
 # The "Performing post-installation setup tasks" may take several minutes
 ./create-all-vms.sh.sh
 
+```
 
-# Login into the master node
-ssh -i keys/kubepgs_id_ed25519 root@$(./get-vm-ip node1)
 
-# Password is: password
+## Uninstall
+
+You can destroy the related nodes using:
+```sh
+./destroy.sh
 ```
 
 ## References:

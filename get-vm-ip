@@ -34,4 +34,10 @@ if [[ -z $HOSTNAME ]]; then
 fi
 
 MAC=$(virsh --connect=qemu:///system domiflist $HOSTNAME | awk '{ print $5 }' | tail -2 | head -1)
-arp -a | grep $MAC | awk '{ print $2 }' | sed 's/[()]//g'
+
+for loop_count in $(seq 1 6); do
+    IP=$(arp -a | grep $MAC | awk '{ print $2 }' | sed 's/[()]//g')
+    [ -n "$IP" ] && echo $IP && exit 0
+    sleep 5
+done
+exit 2
