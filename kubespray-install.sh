@@ -1,5 +1,13 @@
 #/bin/bash
+
 export nodes="$*"
+
+# Setup the firewalls to allow connection to the etcd
+firewall-cmd --add-port={2379,2380}/tcp --permanent # etcd
+firewall-cmd --add-port=443/tcp  --permanent    # Reqiored for the dasboard 
+firewall-cmd --add-port=6443/tcp  --permanent   # kube api-server
+firewall-cmd --reload
+
 
 # Install Python3 required for kubespray
 yum install -y centos-release-scl

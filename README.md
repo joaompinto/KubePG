@@ -2,20 +2,23 @@
 
 This repository provides scripts that can be used to setup a kubernetes playground using libvirt.
 
-Planned:
+## Motivation
 
-- [x] Install CentOS 7 nodes using virt-install
-    - [x] server .iso image
-    - [x] minimal kickstart
-- [ ] Install Upstream Kubernetes using kubespray
+If you are searching for the easiest/quickest option to get a local hosted Kubernetes cluster for experimentation, the best options are [minikube](https://kubernetes.io/docs/tasks/tools/install-minikube/), [minishift](https://docs.okd.io/latest/minishift/getting-started/installing.html) or [k3s](https://k3s.io/). 
 
-Tested on Fedora 30, should work with any modern Linux distribution.
+Mini*/k3s are great for testing, they are packaged/installed using custom methods which were optimized for an easy/quick experience but which are very different from the methods that you would use to install a production kubernetes cluster.
+
+There are several vagrant-based projects that work nice for production-alike environment, but they mostly rely on VirtualBox and/or Vagrant specific features that you will not use in a production deployment.
+
+KubePGS leverages he same libvirt/kvm that you are likely to find on opensource based virtualizaion providers, and uses [kubespray](https://github.com/kubernetes-sigs/kubespray) which you might also be using for production deployments.
+
 
 ## Requirements
 
 - Libvirt/KVM setup per your Linux distribution instructions
 - virt-install
 
+Tested on Fedora 30, should work with any modern Linux distribution.
 
 ## Install
 
