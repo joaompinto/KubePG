@@ -1,4 +1,3 @@
-kubernetes
 Kubernetes
 libvirt
 opensource
@@ -11,3 +10,6 @@ kvm
 iso
 minikube
 minishift
+namespace
+ns
+kubeconfig
