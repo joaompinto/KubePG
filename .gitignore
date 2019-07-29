@@ -1,3 +1,2 @@
-*.iso
-*.tmp
+tmp/*
 keys/*

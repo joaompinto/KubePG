@@ -9,3 +9,5 @@ Kickstart
 virt
 kvm
 iso
+minikube
+minishift

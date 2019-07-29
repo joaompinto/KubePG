@@ -24,21 +24,19 @@ Tested on Fedora 30, should work with any modern Linux distribution.
 
 ```sh
 
-# Download the Centos ISO
-./download.sh
+# Download the CentOS ISO
+utils/download-iso.sh
 
 # Run the CentOS nodes ISO install (with kickstart)
-# The "Performing post-installation setup tasks" may take several minutes
-./create-all-vms.sh.sh
-
+# "Performing post-installation setup tasks" may take several minutes
+utils/create-kpgs-vm.sh
 ```
-
 
 ## Uninstall
 
 You can destroy the related nodes using:
 ```sh
-./destroy.sh
+utils/destroy-kpgs-vm.sh
 ```
 
 ## References:
