@@ -25,8 +25,8 @@ metadata:
     namespace: $1
 rules:
     -   apiGroups: [""]
-        resources: ["*"]
-        verbs: ["get", "list", "watch"]
+        resources: ["pods"]
+        verbs: ["create", "get", "list", "watch", "update", "patch"]
 ---
 kind: RoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
@@ -41,5 +41,17 @@ roleRef:
     kind: Role
     name: $1-admin-role
     apiGroup: rbac.authorization.k8s.io
+---
+kind: NetworkPolicy
+apiVersion: networking.k8s.io/v1
+metadata:
+    namespace: $1
+    name: deny-from-other-namespaces
+spec:
+    podSelector:
+        matchLabels:
+    ingress:
+    - from:
+        - podSelector: {}
 ---
 _EOF_

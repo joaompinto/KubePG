@@ -10,13 +10,16 @@ public_key=$(cat keys/kubepgs_id.pub)
 sed "s~%NEW_SSH_KEY%~${public_key}~g" etc/centos7-minimal.ks.cfg > tmp/centos7-minimal.ks.cfg.tmp
 
 # Create the master/worker node
-sudo utils/create-vm -n node1 \
-    -i tmp/CentOS-7-x86_64-Minimal-1810.iso \
-    -k tmp/centos7-minimal.ks.cfg.tmp \
-    -r 2048 \
-    -c 2 \
-    -s 10 \
-    -d
+for i in $(seq 1 6)
+do
+    sudo utils/create-vm -n node${i} \
+        -i tmp/CentOS-7-x86_64-Minimal-1810.iso \
+        -k tmp/centos7-minimal.ks.cfg.tmp \
+        -r 2048 \
+        -c 2 \
+        -s 20 \
+        -d
+done
 
 echo Waiting for the VM IPs to be available...
 VM_IP=$(utils/get-vm-ip node1)

@@ -15,6 +15,9 @@ KubePGS leverages he same libvirt/kvm that you are likely to find on opensource 
 
 ## Requirements
 
+- Public network connectivity
+- 12+ GB RAM
+- 80GB Disk Space
 - Libvirt/KVM setup per your Linux distribution instructions
 - virt-install
 
@@ -22,6 +25,7 @@ Tested on Fedora 30, should work with any modern Linux distribution.
 
 ## Install
 
+The install duration depends on your hardware and connectivity, on a ThinkPad T480 with a 100MB/s network connection the install will take ≃ 1h30.
 ```sh
 
 # Download the CentOS ISO
@@ -32,12 +36,25 @@ utils/download-iso.sh
 utils/create-kpgs-vm.sh
 ```
 
+## You may want to deploy the metal lb service and ingress-nginx:
+
+```bash
+kubectl apply -f https://raw.githubusercontent.com/google/metallb/v0.8.1/manifests/metallb.yaml
+kubectl apply -f etc/metallb-configmap.yaml
+
+kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/master/deploy/static/mandatory.yaml
+kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/master/deploy/static/provider/cloud-generic.yaml
+kubectl -n ingress-nginx get svc
+```
+
 ## Uninstall
 
 You can destroy the related nodes using:
 ```sh
 utils/destroy-kpgs-vm.sh
 ```
+###
+
 
 ## References:
 

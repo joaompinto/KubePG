@@ -1,12 +1,7 @@
 #/bin/sh
 
+node_list=$*
 
-function setup_master_fw_rules() {
-    # Setup the firewalls to allow connection to the etcd
-    firewall-cmd --add-port={2379,2380}/tcp --permanent # etcd
-    firewall-cmd --add-port=6443/tcp --permanent        # kube api-server
-    firewall-cmd --reload
-}
 
 function install_python36() {
     # Install Python3 )required for kubespray)
@@ -16,18 +11,18 @@ function install_python36() {
 
 function download_kubespray() {
     curl -L https://github.com/kubernetes-sigs/kubespray/archive/v2.10.4.tar.gz -o kubespray.tar.gz
-    tar xzvf kubespray.tar.gz
-    cd kubespray-2*
+    tar xf kubespray.tar.gz
 }
 
 function create_ansible_inventory() {
+    cd kubespray-2*
     # Create the ansible inventory
     scl enable rh-python36 bash << _EOF_
 pip install -r requirements.txt
 rm -Rf inventory/mycluster/
-cp -rfp inventory/local inventory/mycluster
+cp -rfp inventory/sample inventory/mycluster
 CONFIG_FILE=inventory/mycluster/hosts.yaml \
-    python contrib/inventory_builder/inventory.py $(ip route get 1 | awk '{print $NF;exit}')
+    python contrib/inventory_builder/inventory.py ${node_list}
 _EOF_
 
     cat  > inventory/mycluster/hosts.ini << _EOF_
@@ -50,10 +45,16 @@ _EOF_
 
 function setup_every_node_fw_rules() {
     # This runs on every node
-    for node in ${nodes}
+    for node in ${node_list}
     do
-        ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i ~/kubepgs_id root@$node firewall-cmd --add-port=10250/tcp  --permanent   # kubelet access (for logs)
-        ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i ~/kubepgs_id root@$node firewall-cmd --add-port=443/tcp --permanent      # Required for the dasboard 
+        echo $node
+        ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i ~/kubepgs_id root@$node firewall-cmd --add-port=10250/tcp  --permanent       # kubelet access (for logs)
+        ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i ~/kubepgs_id root@$node firewall-cmd --add-port=443/tcp --permanent          # Required for the dasboard 
+        ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i ~/kubepgs_id root@$node firewall-cmd --add-port={2379,2380}/tcp --permanent  # etcd
+        ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i ~/kubepgs_id root@$node firewall-cmd --add-port=6443/tcp --permanent         # kube api-server
+        ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i ~/kubepgs_id root@$node firewall-cmd --add-port=179/tcp --permanent          # callico (BGP)
+        ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i ~/kubepgs_id root@$node firewall-cmd --add-port=8080/tcp  --permanent        # default http service port
+        ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i ~/kubepgs_id root@$node firewall-cmd --add-port=80/tcp  --permanent          # ingress service
         ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i ~/kubepgs_id root@$node firewall-cmd --reload
     done
 }
@@ -63,7 +64,6 @@ function setup_etc_hosts() {
     echo "$(ip route get 1 | awk '{print $NF;exit}') kubepgs.local" >> /etc/hosts
 }
 
-setup_master_fw_rules
 setup_every_node_fw_rules
 install_python36
 download_kubespray
