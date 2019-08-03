@@ -23,7 +23,7 @@ ssh $KEY root@$TARGET -- bash kubespray-install.sh ${node_list}
 scp $KEY root@$TARGET:~/.kube/config ~/.kube/kubepg-admin.conf
 export KUBECONFIG=~/.kube/kubepg-admin.conf
 
-echo A kubeconfig file for the cluster is available at: ~/.kube/kubepg-admin.conf
+echo "A kubeconfig file for the cluster is available at: ~/.kube/kubepg-admin.conf"
 echo
 echo You can setup kubectl to use your cluster using:
 echo

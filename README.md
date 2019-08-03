@@ -39,10 +39,10 @@ utils/download-iso.sh
 Create the libvirt private network that will be dedicated to our environment:
  ```
 # The default config uses 192.168.8/24, if needed changed it on the xml file
-sudo virsh net-define etc/networks/kubepg.xml
-sudo virsh net-start kubepg
-sudo virsh net-autostart kubepg
-sudo virsh net-list
+virsh net-define etc/networks/kubepg.xml
+virsh net-start kubepg
+virsh net-autostart kubepg
+virsh net-list
 ```
 
 ### Create the VMs
