@@ -140,8 +140,6 @@ if [[ ! -z $DEBUG ]]; then
     virsh start "${HOSTNAME}"
 fi
 
-# Make a backup of the VM's XML definition file
-virsh dumpxml "${HOSTNAME}" > "${VM_IMAGE_DIR}/xml/${HOSTNAME}.xml"
 
 if [ ! -z $VERBOSE ]; then
     set +xv

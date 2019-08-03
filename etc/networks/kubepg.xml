@@ -1,0 +1,7 @@
+<network>
+    <name>kubepg</name>
+    <bridge name="kubepg-br"/>
+    <forward/>
+    <ip address="192.168.8.1" netmask="255.255.255.0">
+    </ip>
+</network>

@@ -37,31 +37,37 @@ function run_kubernetes_install_playbook() {
     scl enable rh-python36 bash << _EOF_
 export ANSIBLE_REMOTE_USER=root
 ansible-playbook -i inventory/mycluster/hosts.yaml \
-    --key-file ~/kubepgs_id \
+    --key-file ~/kubepg_id \
     cluster.yml \
     -vvv
 _EOF_
 }
 
 function setup_every_node_fw_rules() {
+    read -r -d '' RULES << EOM
+        --add-port=10250/tcp            # kubelet access «for logs»
+        --add-port=443/tcp              # Required for the dasboard
+        --add-port={2379,2380}/tcp      # etcd
+        --add-port=6443/tcp             # kube api-server
+        --add-port=179/tcp              # callico (BGP)
+        --add-port=8080/tcp             # default http service port
+        --add-port=80/tcp               # ingress service
+EOM
+
+    # Create the rules string
+    rules=""
+    while IFS= read -r line
+    do 
+        rules="$rules $(echo $line|egrep -o '^[^#]*')"
+    done <<< "$RULES"
+
     # This runs on every node
     for node in ${node_list}
     do
-        echo $node
-        ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i ~/kubepgs_id root@$node firewall-cmd --add-port=10250/tcp  --permanent       # kubelet access (for logs)
-        ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i ~/kubepgs_id root@$node firewall-cmd --add-port=443/tcp --permanent          # Required for the dasboard 
-        ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i ~/kubepgs_id root@$node firewall-cmd --add-port={2379,2380}/tcp --permanent  # etcd
-        ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i ~/kubepgs_id root@$node firewall-cmd --add-port=6443/tcp --permanent         # kube api-server
-        ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i ~/kubepgs_id root@$node firewall-cmd --add-port=179/tcp --permanent          # callico (BGP)
-        ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i ~/kubepgs_id root@$node firewall-cmd --add-port=8080/tcp  --permanent        # default http service port
-        ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i ~/kubepgs_id root@$node firewall-cmd --add-port=80/tcp  --permanent          # ingress service
-        ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i ~/kubepgs_id root@$node firewall-cmd --reload
+        FIREWALL_CMD="ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i ~/kubepg_id root@$node firewall-cmd"
+        $FIREWALL_CMD $rules --permanent
+        ${FIREWALL_CMD} --reload
     done
-}
-
-function setup_etc_hosts() {
-    sed -i '/ kubepgs.local$/d' /etc/hosts
-    echo "$(ip route get 1 | awk '{print $NF;exit}') kubepgs.local" >> /etc/hosts
 }
 
 setup_every_node_fw_rules
@@ -69,4 +75,3 @@ install_python36
 download_kubespray
 create_ansible_inventory
 run_kubernetes_install_playbook
-setup_etc_hosts

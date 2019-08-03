@@ -3,7 +3,7 @@ libvirt
 opensource
 virtualizaion
 kubespray
-KubePGS
+KubePG
 Kickstart
 virt
 kvm
@@ -13,3 +13,5 @@ minishift
 namespace
 ns
 kubeconfig
+Kube
+nginx

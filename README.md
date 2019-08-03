@@ -10,30 +10,47 @@ Mini*/k3s are great for testing, they are packaged/installed using custom method
 
 There are several vagrant-based projects that work nice for production-alike environment, but they mostly rely on VirtualBox and/or Vagrant specific features that you will not use in a production deployment.
 
-KubePGS leverages he same libvirt/kvm that you are likely to find on opensource based virtualizaion providers, and uses [kubespray](https://github.com/kubernetes-sigs/kubespray) which you might also be using for production deployments.
+KubePG leverages he same libvirt/kvm that you are likely to find on opensource based virtualizaion providers, and uses [kubespray](https://github.com/kubernetes-sigs/kubespray) which you might also be using for production deployments.
 
 
 ## Requirements
 
-- Public network connectivity
+- Linux system with Libvirt/KVM setup (per your distribution instructions)
 - 12+ GB RAM
-- 80GB Disk Space
-- Libvirt/KVM setup per your Linux distribution instructions
+- 120GB Disk Space
+- Internet (outbound) network connectivity
 - virt-install
+- patience (the install may took from 2h to 3h depending on your hardware and internet connection)
 
-Tested on Fedora 30, should work with any modern Linux distribution.
+
+It is being tested on Fedora30, it should work with most modern Linux distributions.
 
 ## Install
 
-The install duration depends on your hardware and connectivity, on a ThinkPad T480 with a 100MB/s network connection the install will take ≃ 1h30.
+
+### Download iso
+Execute the script to download the CentOS ISO required for the VMs install
+
 ```sh
-
-# Download the CentOS ISO
 utils/download-iso.sh
+```
 
-# Run the CentOS nodes ISO install (with kickstart)
-# "Performing post-installation setup tasks" may take several minutes
-utils/create-kpgs-vm.sh
+### Setup a dedicated libvirt network
+Create the libvirt private network that will be dedicated to our environment:
+ ```
+# The default config uses 192.168.8/24, if needed changed it on the xml file
+sudo virsh net-define etc/networks/kubepg.xml
+sudo virsh net-start kubepg
+sudo virsh net-autostart kubepg
+sudo virsh net-list
+```
+
+### Create the VMs
+
+The creation script will create 6 VMs using the CentOS .iso and a minimal kickstart file
+
+```
+utils/create-kubepg-infra.sh
 ```
 
 ## You may want to deploy the metal lb service and ingress-nginx:
