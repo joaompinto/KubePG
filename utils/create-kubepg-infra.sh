@@ -2,13 +2,12 @@
 
 set -eu
 
-LIBVIRT_DEFAULT_URI=qemu:///system
+export LIBVIRT_DEFAULT_URI=qemu:///system
 
 # Generate an SSH key pair for the post install deployment
-mkdir -p keys/
-ssh-keygen -o -a 100 -t ed25519 -f keys/kubepg_id -P ""
-public_key=$(cat keys/kubepg_id.pub)
-
+mkdir -p ~/.kubepg/
+ssh-keygen -o -a 100 -t ed25519 -f ~/.kubepg/kubepg_id -P ""
+public_key=$(cat ~/.kubepg//kubepg_id.pub)
 kubepg_net=$(virsh net-dumpxml kubepg | grep -oP "ip address='\K\d+\.\d+.\d+")
 
 # Create the vms
@@ -28,13 +27,11 @@ do
         -d
 done
 
-
-#sudo sed -i '/ kubepg.local$/d' /etc/hosts
-#echo "$VM_IP kubepg.local" |sudo tee -a /etc/hosts
+utils/deploy-ssh-config.sh
 
 echo You can now login into the node1 VM using:
 echo
-echo "   ssh -i keys/kubepg_id root@${kubepg_net}.11"
+echo "   ssh kpg-node1"
 echo
 echo or deploy the Kubernetes cluster using:
 echo

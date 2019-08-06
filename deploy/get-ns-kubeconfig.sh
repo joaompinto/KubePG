@@ -2,7 +2,7 @@
 set -eu
 
 NS=$1
-KUBECFG_FILE_NAME=$HOME/${NS}-admin.conf
+KUBECFG_FILE_NAME=$HOME/.kubepg/${NS}-admin.conf
 
 ca_file=$(mktemp)
 chmod 0700 $ca_file

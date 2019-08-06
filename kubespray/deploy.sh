@@ -1,11 +1,11 @@
 #!/bin/sh
 set -eu
 
-LIBVIRT_DEFAULT_URI=qemu:///system
+export LIBVIRT_DEFAULT_URI=qemu:///system
 kubepg_net=$(virsh net-dumpxml kubepg | grep -oP "ip address='\K\d+\.\d+.\d+")
 
 
-mkdir -p ~/.kube
+mkdir -p ~/.kubepg
 script_dir=$(dirname $0)
 TARGET=${kubepg_net}.11
 
@@ -16,17 +16,17 @@ do
     node_list="${node_list} ${new_node}"
 done
 
-KEY="-i keys/kubepg_id"
+KEY="-i ~/.kubepg/kubepg_id"
 scp $KEY ${script_dir}/install.sh root@$TARGET:kubespray-install.sh
-scp $KEY keys/kubepg_id root@$TARGET:
+scp $KEY ~/.kubepg/kubepg_id root@$TARGET:
 ssh $KEY root@$TARGET -- bash kubespray-install.sh ${node_list}
-scp $KEY root@$TARGET:~/.kube/config ~/.kube/kubepg-admin.conf
-export KUBECONFIG=~/.kube/kubepg-admin.conf
+scp $KEY root@$TARGET:~/.kube/config ~/.kubepg/kubeconfig
+export KUBECONFIG=~/.kubepg/kubeconfig
 
-echo "A kubeconfig file for the cluster is available at: ~/.kube/kubepg-admin.conf"
+echo "A kubeconfig file for the cluster is available at: ~/.kubepg/kubeconfig"
 echo
 echo You can setup kubectl to use your cluster using:
 echo
-echo "   export KUBECONFIG=~/.kube/kubepg-admin.conf"
+echo "   export KUBECONFIG=~/.kubepg/kubeconfig"
 echo
 kubectl cluster-info

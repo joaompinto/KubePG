@@ -6,4 +6,5 @@ do
     virsh --connect=qemu:///system undefine kubepg-node${i}
 done
 
-rm -f keys/*
+rm -f ~/.kubepg/kubepg_id*
+

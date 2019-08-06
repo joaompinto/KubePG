@@ -2,6 +2,13 @@
 
 node_list=$*
 
+#https://github.com/kubernetes-sigs/kubespray.git
+GIT_REPO="https://github.com/joaompinto/kubespray.git"
+GIT_COMMIT="v1.15.2"
+
+function install_git() {
+    yum install -y git
+}
 
 function install_python36() {
     # Install Python3 )required for kubespray)
@@ -10,12 +17,16 @@ function install_python36() {
 }
 
 function download_kubespray() {
-    curl -L https://github.com/kubernetes-sigs/kubespray/archive/v2.10.4.tar.gz -o kubespray.tar.gz
-    tar xf kubespray.tar.gz
+    #git clone 
+    rm -rf kubespray
+    git clone ${GIT_REPO}
+    cd kubespray
+    git checkout ${GIT_COMMIT}
+    cd ..
 }
 
 function create_ansible_inventory() {
-    cd kubespray-2*
+    cd kubespray
     # Create the ansible inventory
     scl enable rh-python36 bash << _EOF_
 pip install -r requirements.txt
@@ -70,7 +81,9 @@ EOM
     done
 }
 
+
 setup_every_node_fw_rules
+install_git
 install_python36
 download_kubespray
 create_ansible_inventory
