@@ -109,8 +109,6 @@ if [[ ! -z $VERBOSE ]]; then
     set -xv
 fi
 
-mkdir -p $VM_IMAGE_DIR/{images,xml}
-
 virt-install \
     --connect=qemu:///system \
     --name="${HOSTNAME}" \
@@ -124,7 +122,7 @@ virt-install \
     --arch x86_64 \
     --accelerate \
     --check-cpu \
-    --os-type=linux \
+    --os-variant=centos7.0 \
     --force \
     --watchdog=default \
     --extra-args="ks=file:/${KS_FILE} console=tty0 console=ttyS0,115200n8 serial" \

@@ -5,6 +5,7 @@ export LIBVIRT_DEFAULT_URI=qemu:///system
 kubepg_net=$(virsh net-dumpxml kubepg | grep -oP "ip address='\K\d+\.\d+.\d+")
 
 [ ! -d ~/.ssh ] && mkdir -m700 ~/.ssh
+[ ! -f ~/.ssh/config ] && echo >> ~/.ssh/config
 
 for i in $(seq 1 6)
 do
