@@ -52,12 +52,17 @@ Execute the infrastructure script providing a private ip network range, this ran
 sudo infra/create.sh 192.168.8.1/24
 ```
 
-## You may want to deploy the metal lb service and ingress-nginx:
+## Optional features
 
-```bash
-kubectl apply -f https://raw.githubusercontent.com/google/metallb/v0.8.1/manifests/metallb.yaml
-kubectl apply -f etc/metallb-configmap.yaml
+### Load Balancer
 
+You can install support for "bare metal" load balancing support with:
+```
+kubernetes/install-loadbalancer.sh
+```
+
+### NGINX Ingress
+```
 kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/master/deploy/static/mandatory.yaml
 kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/master/deploy/static/provider/cloud-generic.yaml
 kubectl -n ingress-nginx get svc
