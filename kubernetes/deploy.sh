@@ -17,7 +17,7 @@ do
 done
 
 KEY="-i ~/.kubepg/kubepg_id"
-scp $KEY ${script_dir}/install.sh root@$TARGET:kubespray-install.sh
+scp $KEY ${script_dir}/../kubespray/install.sh root@$TARGET:kubespray-install.sh
 scp $KEY ~/.kubepg/kubepg_id root@$TARGET:
 ssh $KEY root@$TARGET -- bash kubespray-install.sh ${node_list}
 scp $KEY root@$TARGET:~/.kube/config ~/.kubepg/kubeconfig

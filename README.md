@@ -38,19 +38,18 @@ utils/download-iso.sh
 ### Setup a dedicated libvirt network
 Create the libvirt private network that will be dedicated to our environment:
  ```
-# The default config uses 192.168.8/24, if needed changed it on the xml file
-virsh net-define etc/networks/kubepg.xml
-virsh net-start kubepg
-virsh net-autostart kubepg
-virsh net-list
+# The default config uses 192.168.8/24 for your virtual bridge network, 
+# if needed changed it on the xml file
+
 ```
 
 ### Create the VMs
 
-The creation script will create 6 VMs using the CentOS .iso and a minimal kickstart file
+Execute the infrastructure script providing a private ip network range, this range will be used internally on your host, it must not overlap with an existing network range.
 
 ```
-utils/create-kubepg-infra.sh
+# Use 192.168.8.1 for our kubernetes virtual infrastructure default network
+sudo infra/create.sh 192.168.8.1/24
 ```
 
 ## You may want to deploy the metal lb service and ingress-nginx:
@@ -68,7 +67,9 @@ kubectl -n ingress-nginx get svc
 
 You can destroy the related nodes using:
 ```sh
-utils/destroy-kpgs-vm.sh
+infra/shutdown.sh
+infra/destroy.sh
+virsh net-destroy etc/networks/kubepg.xml
 ```
 ###
 
