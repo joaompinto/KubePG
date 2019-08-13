@@ -37,23 +37,35 @@ chown ${USERNAME}:${USERNAME} ${homedir}/.kubepg/kubepg_id
 public_key=$(cat ${homedir}/.kubepg/kubepg_id.pub)
 kubepg_net=$(virsh net-dumpxml kubepg | grep -oP "ip address='\K\d+\.\d+.\d+")
 
-# Create the vms
-for i in $(seq 1 6)
-do
-    sed "s~%NEW_SSH_KEY%~${public_key}~g" etc/centos7-minimal.ks.cfg > tmp/centos7-minimal.ks.cfg.tmp
-    sed -i "s~%GW%~${kubepg_net}.1~g" tmp/centos7-minimal.ks.cfg.tmp
-    sed -i "s~%IP%~${kubepg_net}.1${i}~g" tmp/centos7-minimal.ks.cfg.tmp
-    sed -i "s~%HOSTNAME%~kubepg-node${i}~g" tmp/centos7-minimal.ks.cfg.tmp
-    utils/create-kubepg-vm.sh -n kubepg-node${i} \
-        -i tmp/CentOS-7-x86_64-Minimal-1810.iso \
-        -k tmp/centos7-minimal.ks.cfg.tmp \
-        -r 2048 \
-        -c 2 \
-        -s 20 \
-        -b kubepg-br \
-        -d
-done
+# Create the first vm
+i=1
+sed "s~%NEW_SSH_KEY%~${public_key}~g" etc/centos7-minimal.ks.cfg > tmp/centos7-minimal.ks.cfg.tmp
+sed -i "s~%GW%~${kubepg_net}.1~g" tmp/centos7-minimal.ks.cfg.tmp
+sed -i "s~%IP%~${kubepg_net}.1${i}~g" tmp/centos7-minimal.ks.cfg.tmp
+sed -i "s~%HOSTNAME%~kubepg-node${i}~g" tmp/centos7-minimal.ks.cfg.tmp
+utils/create-kubepg-vm.sh -n kubepg-node${i} \
+    -i tmp/CentOS-7-x86_64-Minimal-1810.iso \
+    -k tmp/centos7-minimal.ks.cfg.tmp \
+    -r 2048 \
+    -c 2 \
+    -s 20 \
+    -b kubepg-br \
+    -d
 
+virsh destroy kubepg-node1
+
+# Create the VMs
+for i in $(seq 2 6)
+do
+    virt-clone --original kubepg-node1 --name kubepg-node${i} \
+        --file /var/lib/libvirt/images/kubepg-node${i}.img \
+        --file /var/lib/libvirt/images/kubepg-node${i}_1.img
+    virt-sysprep -d kubepg-node${i} --hostname kubepg-node${i} \
+        --run-command "sed -i s/${kubepg_net}.11/${kubepg_net}.1${i}/g /etc/sysconfig/network-scripts/ifcfg-eth0" \
+        --operations defaults,-ssh-userdir
+    virsh start kubepg-node${i}
+done
+virsh start kubepg-node1
 utils/deploy-ssh-config.sh
 
 echo You can now login into the node1 VM using:
