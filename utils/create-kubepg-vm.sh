@@ -115,6 +115,7 @@ virt-install \
     --bridge="${BRIDGE}" \
     --mac="${MAC}" \
     --disk="${VM_IMAGE_DIR}/images/${HOSTNAME}.img,bus=virtio,size=${STORAGE}" \
+    --disk="${VM_IMAGE_DIR}/images/${HOSTNAME}_1.img,bus=virtio,size=10" \
     --ram="${RAM}" \
     --vcpus="${VCPUS}" \
     --autostart \

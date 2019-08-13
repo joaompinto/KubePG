@@ -91,8 +91,8 @@ function disable_firewalld() {
 
 #setup_every_node_fw_rules
 disable_firewalld
-#install_git
-#install_python36
-#download_kubespray
-#create_ansible_inventory
-#run_kubernetes_install_playbook
+install_git
+install_python36
+download_kubespray
+create_ansible_inventory
+run_kubernetes_install_playbook
