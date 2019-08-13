@@ -81,10 +81,18 @@ EOM
     done
 }
 
+function disable_firewalld() {
+    for node in ${node_list}
+    do
+        ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i ~/kubepg_id root@$node systemctl stop firewalld
+        ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i ~/kubepg_id root@$node systemctl disable firewalld
+    done
+}
 
-setup_every_node_fw_rules
-install_git
-install_python36
-download_kubespray
-create_ansible_inventory
-run_kubernetes_install_playbook
+#setup_every_node_fw_rules
+disable_firewalld
+#install_git
+#install_python36
+#download_kubespray
+#create_ansible_inventory
+#run_kubernetes_install_playbook
