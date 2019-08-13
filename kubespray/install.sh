@@ -49,8 +49,7 @@ function run_kubernetes_install_playbook() {
 export ANSIBLE_REMOTE_USER=root
 ansible-playbook -i inventory/mycluster/hosts.yaml \
     --key-file ~/kubepg_id \
-    cluster.yml \
-    -vvv
+    cluster.yml
 _EOF_
 }
 
