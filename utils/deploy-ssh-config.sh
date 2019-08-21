@@ -9,7 +9,7 @@ kubepg_net=$(virsh net-dumpxml kubepg | grep -oP "ip address='\K\d+\.\d+.\d+")
 
 for i in $(seq 1 6)
 do
-    host="kpg-node${i}"
+    host="kubepg-node${i}"
     sed -i 's/^Host/\n&/' ~/.ssh/config
     sed -i '/^Host '"$host"'$/,/^$/d;/^$/d' ~/.ssh/config
     cat << _EOF_ >> ~/.ssh/config

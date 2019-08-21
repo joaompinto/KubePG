@@ -4,7 +4,7 @@ metadata:
     name: my-pvc
 spec:
     accessModes:
-      - ReadWriteMany
+        - ReadWriteMany
     storageClassName: rook-ceph-block
     resources:
         requests:

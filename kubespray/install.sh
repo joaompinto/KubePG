@@ -88,8 +88,16 @@ function disable_firewalld() {
     done
 }
 
+function install_iscsi() {
+    for node in ${node_list}
+    do
+        ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i ~/kubepg_id root@$node "yum install iscsi-initiator-utils -y && systemctl enable iscsid && systemctl start iscsid"
+    done
+}
+
 #setup_every_node_fw_rules
 disable_firewalld
+install_iscsi
 install_git
 install_python36
 download_kubespray

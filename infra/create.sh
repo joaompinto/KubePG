@@ -70,7 +70,7 @@ utils/deploy-ssh-config.sh
 
 echo You can now login into the node1 VM using:
 echo
-echo "  ssh kpg-node1"
+echo "  ssh kubepg-node1"
 echo
 echo or deploy the Kubernetes cluster using:
 echo
