@@ -14,4 +14,5 @@ virsh net-undefine kubepg
 #sudo brctl delbr kubepg-br
 
 rm -f ${homedir}/.kubepg/kubepg_id*
+rm -rf /var/lib/libvirt/images/kubepg-*
 
