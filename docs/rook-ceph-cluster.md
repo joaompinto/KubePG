@@ -25,7 +25,7 @@ kubectl create -f toolbox.yaml
 kubectl -n rook-ceph exec -it $(kubectl -n rook-ceph get pod -l "app=rook-ceph-tools" -o jsonpath='{.items[0].metadata.name}') bash
 ```
 
-You can check from the tollbox with the following commands:
+You can check from the toolbox with the following commands:
 - ceph status
 - ceph osd status
 - ceph df
