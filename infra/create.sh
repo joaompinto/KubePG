@@ -44,7 +44,7 @@ sed -i "s~%GW%~${kubepg_net}.1~g" tmp/centos7-minimal.ks.cfg.tmp
 sed -i "s~%IP%~${kubepg_net}.1${i}~g" tmp/centos7-minimal.ks.cfg.tmp
 sed -i "s~%HOSTNAME%~kubepg-node${i}~g" tmp/centos7-minimal.ks.cfg.tmp
 utils/create-kubepg-vm.sh -n kubepg-node${i} \
-    -i tmp/CentOS-7-x86_64-Minimal-1810.iso \
+    -i tmp/CentOS-7-x86_64-Minimal-1908.iso \
     -k tmp/centos7-minimal.ks.cfg.tmp \
     -r 2048 \
     -c 2 \
