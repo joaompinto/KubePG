@@ -32,6 +32,7 @@ create_libvirt_network $1
 
 # Generate an SSH key pair for the post install deployment
 mkdir -p ${homedir}/.kubepg/
+chown ${USERNAME}:${USERNAME} ${homedir}/.kubepg/
 ssh-keygen -o -a 100 -t ed25519 -f ${homedir}/.kubepg/kubepg_id -P ""
 chown ${USERNAME}:${USERNAME} ${homedir}/.kubepg/kubepg_id
 public_key=$(cat ${homedir}/.kubepg/kubepg_id.pub)
